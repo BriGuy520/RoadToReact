@@ -5,22 +5,43 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
 
-  const welcome = {
-    greeting: "Hey", 
-  }
-
-  function Name(title){
-    return title;
-  }
-
-  const listOfPeople = ["Ashley", "Alex", "Lauren", "Carol", "Madeleine", "Douglas"];
+  
+  const list = [
+    {
+      title: "React", 
+      url: "https://reactjs.org", 
+      author: "Jordan Wilke", 
+      num_comments: 3,
+      points: 4, 
+      objectID: 0,
+    }, {
+      title: "Redux", 
+      url: "https://redux.js.org", 
+      author: "Dan Abramov, Andrew Clark", 
+      num_comments: 2, 
+      points: 5, 
+      objectID: 1,
+    }
+  ]
 
   return (
     <div className="App">
       <div>
-        <h1>{welcome.greeting}, {Name("React")}!</h1>
+        <h1>My Hacker Stories</h1>
+
         <ul>
-          {listOfPeople.map(person => <li>Hello, {person}</li>)}
+          {list.map(item => {
+            return (
+              <li key={item.objectID}>
+                <a href={item.url}>{item.title}</a>
+                <p>Author(s): {item.author}</p>
+                <p>Comments: {item.num_comments}</p>
+                <p>Points: {item.points}</p>
+
+              </li>
+
+            );
+          })}
         </ul>
       </div>
       <label htmlFor="search">Search:</label>
