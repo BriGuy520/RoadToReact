@@ -5,28 +5,26 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
 
+  const welcome = {
+    greeting: "Hey", 
+  }
+
+  function Name(title){
+    return title;
+  }
+
+  const listOfPeople = ["Ashley", "Alex", "Lauren", "Carol", "Madeleine", "Douglas"];
+
   return (
     <div className="App">
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <h1>{welcome.greeting}, {Name("React")}!</h1>
+        <ul>
+          {listOfPeople.map(person => <li>Hello, {person}</li>)}
+        </ul>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <label htmlFor="search">Search:</label>
+      <input id="search" type="text" />
     </div>
   )
 }
