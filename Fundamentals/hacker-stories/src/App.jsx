@@ -30,6 +30,8 @@ function App() {
 
   const url = "http://hn.algolia.com/api/v1/search?query=";
 
+  console.log(stories);
+
   React.useEffect(() => {
 
     fetch(`${url}${searchTerm}`)
@@ -58,13 +60,13 @@ function App() {
 const List = ({ stories, term }) => {
 
   return (
-    <ul>
+    <ol>
     {stories.map(story => {
       if(Object.values(story).join(' ').includes(term)){
         return <Item key={story.objectID} item={story} />
       }
     })}
-    </ul>
+    </ol>
   )
 }
 
@@ -73,9 +75,11 @@ const Item = ({item}) => {
   return (
     <li style={{textAlign: 'left'}}>
       <a href={item.url}>{item.title}</a>
-      <span> Author(s): {item.author}</span>
-      <span> Comments: {item.num_comments}</span>
-      <span> Points: {item.points}</span>
+      <p>
+      <span><strong>Author(s):</strong> {item.author}</span>
+      <span><strong> Comments:</strong> {item.num_comments}</span>
+      <span><strong> Points:</strong> {item.points}</span>
+      </p>
     </li>
   );
 }
