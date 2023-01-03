@@ -1,63 +1,72 @@
 import React from 'react'
 import reactLogo from './assets/react.svg'
-import './App.css'
+import './App.css';
+import axios from 'axios';
+
+const initialStories = [
+  {
+    title: "React", 
+    url: "https://reactjs.org", 
+    author: "Jordan Wilke", 
+    num_comments: 3,
+    points: 4, 
+    objectID: 0,
+  }, {
+    title: "Redux", 
+    url: "https://redux.js.org", 
+    author: "Dan Abramov, Andrew Clark", 
+    num_comments: 2, 
+    points: 5, 
+    objectID: 1,
+  }
+];
+
 
 function App() {
 
-  const [searchTerm, useSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = useLocalStorage('search', 'React');
 
-  
-  const list = [
-    {
-      title: "React", 
-      url: "https://reactjs.org", 
-      author: "Jordan Wilke", 
-      num_comments: 3,
-      points: 4, 
-      objectID: 0,
-    }, {
-      title: "Redux", 
-      url: "https://redux.js.org", 
-      author: "Dan Abramov, Andrew Clark", 
-      num_comments: 2, 
-      points: 5, 
-      objectID: 1,
-    }
-  ]
+  const [stories, setStories] = React.useState(initialStories);
+
+  const url = "http://hn.algolia.com/api/v1/search?query=";
+
+  React.useEffect(() => {
+
+    fetch(`${url}${searchTerm}`)
+  .then(response => response.json())
+  .then(data => setStories(data.hits))
+  .catch(error => console.log(error))
+  }, [searchTerm])
 
   const handleChange = (e) => {
     e.preventDefault();
 
-    useSearchTerm(e.target.value);
-    list
+    setSearchTerm(e.target.value);
   }
 
   return (
     <div className="App">
       <div>
         <h1>My Hacker Stories</h1>
-        <Search handleSearch={handleChange} term={searchTerm} />
-        <List list={list} term={searchTerm} />
+        <InputWithLabel id={"search"} onInputChange={handleChange}>Search: </InputWithLabel>
+        <List stories={stories} term={searchTerm} />
       </div>
     </div>
   )
 }
 
-const List = ({ list, term }) => {
-
+const List = ({ stories, term }) => {
 
   return (
     <ul>
-    {list.map(item => {
-      if(term && Object.values(item).join(' ').includes(term)){
-        return <Item key={item.objectID} item={item} />
+    {stories.map(story => {
+      if(Object.values(story).join(' ').includes(term)){
+        return <Item key={story.objectID} item={story} />
       }
     })}
     </ul>
   )
-
 }
-
 
 const Item = ({item}) => {
    
@@ -71,16 +80,33 @@ const Item = ({item}) => {
   );
 }
 
-const Search = ({handleSearch, term}) => {
+const InputWithLabel = ({
+  value,
+  id, 
+  type = "text",
+  onInputChange,
+  children
+}) => {
 
-  
   return (
     <>
-      <label htmlFor="search">Search:</label>
-      <input value={term} id="search" type="text" onChange={handleSearch} />
-      <p><strong>The current search term is:</strong> {term}</p>
+      <label htmlFor={id}>{children}</label>
+      <input value={value} id={id} type={type} onChange={onInputChange} />
     </>
-  );
+  )
+}
+
+const useLocalStorage = (key, initialValue) => {
+  
+  const [value, setValue] = React.useState(window.localStorage.getItem(key) ?? initialValue);
+
+  React.useEffect(() => {
+
+    window.localStorage.setItem(key, value);
+
+  }, [key, value])
+
+  return [value, setValue];
 
 }
 
