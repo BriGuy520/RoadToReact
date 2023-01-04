@@ -30,14 +30,13 @@ function App() {
 
   const url = "http://hn.algolia.com/api/v1/search?query=";
 
-  console.log(stories);
-
   React.useEffect(() => {
 
     fetch(`${url}${searchTerm}`)
-  .then(response => response.json())
-  .then(data => setStories(data.hits))
-  .catch(error => console.log(error))
+    .then(response => response.json())
+    .then(data => setStories(data.hits))
+    .catch(error => console.log(error))
+
   }, [searchTerm])
 
   const handleChange = (e) => {
@@ -46,39 +45,48 @@ function App() {
     setSearchTerm(e.target.value);
   }
 
+  const deleteStory = (item) => {
+
+    const updatedListOfStories = stories.filter(story => story != item);
+
+    setStories(updatedListOfStories);
+    
+  }
+
   return (
     <div className="App">
       <div>
         <h1>My Hacker Stories</h1>
         <InputWithLabel id={"search"} onInputChange={handleChange}>Search: </InputWithLabel>
-        <List stories={stories} term={searchTerm} />
+        <List stories={stories} term={searchTerm} deleteStory={deleteStory} />
       </div>
     </div>
   )
 }
 
-const List = ({ stories, term }) => {
+const List = ({ stories, term, deleteStory }) => {
 
   return (
     <ol>
     {stories.map(story => {
       if(Object.values(story).join(' ').includes(term)){
-        return <Item key={story.objectID} item={story} />
+        return <Item key={story.objectID} item={story} deleteStory={deleteStory} />
       }
     })}
     </ol>
   )
 }
 
-const Item = ({item}) => {
+const Item = ({item, deleteStory}) => {
    
   return (
     <li style={{textAlign: 'left'}}>
       <a href={item.url}>{item.title}</a>
-      <p>
+      <p className="post-details">
       <span><strong>Author(s):</strong> {item.author}</span>
       <span><strong> Comments:</strong> {item.num_comments}</span>
       <span><strong> Points:</strong> {item.points}</span>
+      <button onClick={() => deleteStory(item)}>Delete</button>
       </p>
     </li>
   );

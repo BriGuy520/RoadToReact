@@ -17,6 +17,15 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.post-details span {
+  margin: auto 0;
+}
+
+.post-details {
+  display: flex;
+  justify-content: space-between;
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
