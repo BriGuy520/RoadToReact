@@ -28,14 +28,25 @@ function App() {
 
   const [stories, setStories] = React.useState(initialStories);
 
+  const [isLoading, setLoading] = React.useState(false);
+
   const url = "http://hn.algolia.com/api/v1/search?query=";
 
   React.useEffect(() => {
 
-    fetch(`${url}${searchTerm}`)
-    .then(response => response.json())
-    .then(data => setStories(data.hits))
-    .catch(error => console.log(error))
+    console.log("useEffects being used");
+    setLoading(true);
+
+    setTimeout(() => {
+      fetch(`${url}${searchTerm}`)
+      .then(response => response.json())
+      .then(data => {
+        setStories(data.hits);
+        setLoading(false);
+      }).catch(error => console.log(error))
+    }, 4000)
+    
+
 
   }, [searchTerm])
 
@@ -59,6 +70,7 @@ function App() {
         <h1>My Hacker Stories</h1>
         <InputWithLabel id={"search"} onInputChange={handleChange}>Search: </InputWithLabel>
         <List stories={stories} term={searchTerm} deleteStory={deleteStory} />
+        <h3>{isLoading ? "Loading..." : ''}</h3>
       </div>
     </div>
   )
